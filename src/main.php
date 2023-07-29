@@ -1,5 +1,5 @@
 <?php
-require 'Game.php';
+require "Game.php";
 
 $game = new Game();
 

@@ -8,14 +8,16 @@ class Game
     private string $orientation;
     private int $nbOfStep;
     private string $playerName;
-    private bool $moved = false;
+    public bool $moved = false;
+    public array $players = [];
+    public int $nbCaseBetweenPlayers = 0;
 
     public function __construct()
     {
         self::start();
     }
 
-    private function grille(): array
+    public function grille(): array
     {
         // Taille de la grille
         $taille = 10;
@@ -26,7 +28,6 @@ class Game
                 $tableau[$i][$j] = " . ";
             }
         }
-
         return $tableau;
     }
 
@@ -113,12 +114,40 @@ class Game
         }
     }
 
+    public function nbCases(string $element, int $rowIndex, int $columnIndex)
+    {
+        if ($element == "P1" && $this->playerName == "P2" && strtoupper($this->orientation) == Orientation::AVANCER->get()) {
+            $this->position_memory_player[$rowIndex][$columnIndex] = "P2P1";
+        }
+
+        if ($element == "P2" && $this->playerName == "P1" && strtoupper($this->orientation) == Orientation::AVANCER->get()) {
+            $this->position_memory_player[$rowIndex][$columnIndex] = "P1P2";
+        }
+
+        if ($element == "P1" && $this->playerName == "P2" && strtoupper($this->orientation) == Orientation::GAUCHE->get()) {
+            $this->position_memory_player[$rowIndex][$columnIndex] = "P1P2";
+        }
+
+        if ($element == "P2" && $this->playerName == "P1" && strtoupper($this->orientation) == Orientation::GAUCHE->get()) {
+            $this->position_memory_player[$rowIndex][$columnIndex] = "P2P1";
+        }
+
+        if ($element == "P1" && $this->playerName == "P2" && strtoupper($this->orientation) == Orientation::DROITE->get()) {
+            $this->position_memory_player[$rowIndex][$columnIndex] = "P2P1";
+        }
+
+        if ($element == "P2" && $this->playerName == "P1" && strtoupper($this->orientation) == Orientation::DROITE->get()) {
+            $this->position_memory_player[$rowIndex][$columnIndex] = "P1P2";
+        }
+    }
+
     public function deplacement(string $player, string $orientation, int $nbOfSteps = 0): array | string
     {
         $this->playerName = $player;
         $this->orientation = $orientation;
         $this->nbOfStep = $nbOfSteps;
         $this->moved = false;
+        $this->players[] = $player;
 
         self::trackError();
 
@@ -146,37 +175,6 @@ class Game
                             $this->moved = true;
                         }
                     }
-
-                    if ($element == "P1" && $this->playerName == "P2" && strtoupper($this->orientation) == Orientation::AVANCER->get()) {
-                        $this->position_memory_player[$rowIndex][$columnIndex] = "P2P1";
-                        exit("P2P1 AVANCER GAME OVER P2 WON . \n");
-                    }
-            
-                    if ($element == "P2" && $this->playerName == "P1" && strtoupper($this->orientation) == Orientation::AVANCER->get()) {
-                        $this->position_memory_player[$rowIndex][$columnIndex] = "P1P2";
-                        exit("P1P2 AVANCER GAME OVER P1 WON . \n");
-                    }
-            
-                    if ($element == "P1" && $this->playerName == "P2" && strtoupper($this->orientation) == Orientation::GAUCHE->get()) {
-                        $this->position_memory_player[$rowIndex][$columnIndex] = "P1P2";
-                        exit("P2P1 GAUCHE GAME OVER P1 WON . \n");
-                    }
-            
-                    if ($element == "P2" && $this->playerName == "P1" && strtoupper($this->orientation) == Orientation::GAUCHE->get()) {
-                        $this->position_memory_player[$rowIndex][$columnIndex] = "P2P1";
-                        exit("P1P2 GAUCHE GAME OVER P2 WON . \n");
-                    }
-            
-                    if ($element == "P1" && $this->playerName == "P2" && strtoupper($this->orientation) == Orientation::DROITE->get()) {
-                        $this->position_memory_player[$rowIndex][$columnIndex] = "P2P1";
-                        exit("P2P1 DROITE GAME OVER P2 WON . \n");
-                    }
-            
-                    if ($element == "P2" && $this->playerName == "P1" && strtoupper($this->orientation) == Orientation::DROITE->get()) {
-                        $this->position_memory_player[$rowIndex][$columnIndex] = "P1P2";
-                        exit("P1P2 DROITE GAME OVER P1 WON . \n");
-                    }
-                    
                     self::reformatGrille($element, $rowIndex, $columnIndex);
                 }
             }
