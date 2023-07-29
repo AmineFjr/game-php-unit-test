@@ -1,5 +1,6 @@
 <?php
 require "./src/Game.php";
+define ('PHPUnit_RUNNER_IN_PHAR', 1);
 
 use PHPUnit\Framework\TestCase;
 
@@ -39,4 +40,21 @@ class GameTest extends TestCase
         $this->assertFalse($movedOutsideGrid);
     }
     
+    public function test_search_if_player_exist_on_column_or_row() {
+        $game = new Game();
+        $game->deplacement("P1", "AVANCER", 2);
+        $game->deplacement("P2", "AVANCER", 1);
+
+        $this->assertEquals(2, $game->distanceBetweenPlayers);
+    }
+
+    public function test_player_won_the_game() {
+        $game = new Game();
+        $game->deplacement("P1", "AVANCER", 2);
+        $game->deplacement("P2", "AVANCER", 2);
+
+        $this->assertEquals("P2 won the game", $game->playerWon);
+
+    }
+
 }

@@ -1,7 +1,6 @@
 <?php
 require 'Player.php';
 require 'Orientation.php';
-
 class Game
 {
     public array $position_memory_player;
@@ -10,7 +9,8 @@ class Game
     private string $playerName;
     public bool $moved = false;
     public array $players = [];
-    public int $nbCaseBetweenPlayers = 0;
+    public int $distanceBetweenPlayers = 0;
+    public string $playerWon = '';
 
     public function __construct()
     {
@@ -47,36 +47,21 @@ class Game
         }
     }
 
-    private function playerWon(string $element, int $rowIndex, int $columnIndex)
+    private function playerWon()
     {
-        if ($element == "P1" && $this->playerName == "P2" && strtoupper($this->orientation) == Orientation::AVANCER->get()) {
-            $this->position_memory_player[$rowIndex][$columnIndex] = "P2P1";
-            exit("P2P1 AVANCER GAME OVER P2 WON . \n");
+        $taille = 10;
+        $playerExisted = [];
+        for ($i = 1; $i <= $taille; $i++) {
+            for ($j = 1; $j <= $taille; $j++) {
+                if ($this->position_memory_player[$i][$j] != 'P1-P2' && $this->position_memory_player[$i][$j] != ' . ') {
+                    $playerExisted[] = $this->position_memory_player[$i][$j];
+                }
+            }
         }
-
-        if ($element == "P2" && $this->playerName == "P1" && strtoupper($this->orientation) == Orientation::AVANCER->get()) {
-            $this->position_memory_player[$rowIndex][$columnIndex] = "P1P2";
-            exit("P1P2 AVANCER GAME OVER P1 WON . \n");
-        }
-
-        if ($element == "P1" && $this->playerName == "P2" && strtoupper($this->orientation) == Orientation::GAUCHE->get()) {
-            $this->position_memory_player[$rowIndex][$columnIndex] = "P1P2";
-            exit("P2P1 GAUCHE GAME OVER P1 WON . \n");
-        }
-
-        if ($element == "P2" && $this->playerName == "P1" && strtoupper($this->orientation) == Orientation::GAUCHE->get()) {
-            $this->position_memory_player[$rowIndex][$columnIndex] = "P2P1";
-            exit("P1P2 GAUCHE GAME OVER P2 WON . \n");
-        }
-
-        if ($element == "P1" && $this->playerName == "P2" && strtoupper($this->orientation) == Orientation::DROITE->get()) {
-            $this->position_memory_player[$rowIndex][$columnIndex] = "P2P1";
-            exit("P2P1 DROITE GAME OVER P2 WON . \n");
-        }
-
-        if ($element == "P2" && $this->playerName == "P1" && strtoupper($this->orientation) == Orientation::DROITE->get()) {
-            $this->position_memory_player[$rowIndex][$columnIndex] = "P1P2";
-            exit("P1P2 DROITE GAME OVER P1 WON . \n");
+        if (count($playerExisted) == 1) {
+            $this->playerWon = $playerExisted[0] . ' won the game';
+            echo $this->playerWon;
+            if (!defined('PHPUnit_RUNNER_IN_PHAR')) exit;
         }
     }
 
@@ -114,31 +99,28 @@ class Game
         }
     }
 
-    public function nbCases(string $element, int $rowIndex, int $columnIndex)
+    public function nbCasesBetweenPlayers(int $rowIndex, int $columnIndex, string $playerName)
     {
-        if ($element == "P1" && $this->playerName == "P2" && strtoupper($this->orientation) == Orientation::AVANCER->get()) {
-            $this->position_memory_player[$rowIndex][$columnIndex] = "P2P1";
+        if ($playerName === "P1") {
+            $playerToSearch = "P2";
+        } else {
+            $playerToSearch = "P1";
         }
 
-        if ($element == "P2" && $this->playerName == "P1" && strtoupper($this->orientation) == Orientation::AVANCER->get()) {
-            $this->position_memory_player[$rowIndex][$columnIndex] = "P1P2";
+        //serch on column
+        for ($i = 1; $i <= 10; $i++) {
+            if ($this->position_memory_player[$rowIndex][$i] == $playerToSearch) {
+                $this->distanceBetweenPlayers = $i - $rowIndex;
+            }
         }
 
-        if ($element == "P1" && $this->playerName == "P2" && strtoupper($this->orientation) == Orientation::GAUCHE->get()) {
-            $this->position_memory_player[$rowIndex][$columnIndex] = "P1P2";
+        //serch on row
+        for ($i = 1; $i <= 10; $i++) {
+            if ($this->position_memory_player[$i][$columnIndex] == $playerToSearch) {
+                $this->distanceBetweenPlayers = $i - $columnIndex;
+            }
         }
-
-        if ($element == "P2" && $this->playerName == "P1" && strtoupper($this->orientation) == Orientation::GAUCHE->get()) {
-            $this->position_memory_player[$rowIndex][$columnIndex] = "P2P1";
-        }
-
-        if ($element == "P1" && $this->playerName == "P2" && strtoupper($this->orientation) == Orientation::DROITE->get()) {
-            $this->position_memory_player[$rowIndex][$columnIndex] = "P2P1";
-        }
-
-        if ($element == "P2" && $this->playerName == "P1" && strtoupper($this->orientation) == Orientation::DROITE->get()) {
-            $this->position_memory_player[$rowIndex][$columnIndex] = "P1P2";
-        }
+        return $this->distanceBetweenPlayers;
     }
 
     public function deplacement(string $player, string $orientation, int $nbOfSteps = 0): array | string
@@ -158,6 +140,7 @@ class Game
                         if ($rowIndex + $nbOfSteps <= 10 || $rowIndex + $nbOfSteps >= 10) {
                             $this->position_memory_player[$rowIndex + $nbOfSteps][$columnIndex] = $this->playerName;
                             $this->moved = true;
+                            self::nbCasesBetweenPlayers($rowIndex + $nbOfSteps, $columnIndex, $this->playerName);
                         }
                     }
 
@@ -166,6 +149,7 @@ class Game
                             echo $columnIndex - $nbOfSteps;
                             $this->position_memory_player[$rowIndex][$columnIndex - $nbOfSteps] = $this->playerName;
                             $this->moved = true;
+                            self::nbCasesBetweenPlayers($rowIndex, $columnIndex - $nbOfSteps, $this->playerName);
                         }
                     }
 
@@ -173,6 +157,7 @@ class Game
                         if ($columnIndex + $nbOfSteps <= 10 || $columnIndex + $nbOfSteps >= 10) {
                             $this->position_memory_player[$rowIndex][$columnIndex + $nbOfSteps] = $this->playerName;
                             $this->moved = true;
+                            self::nbCasesBetweenPlayers($rowIndex, $columnIndex + $nbOfSteps, $this->playerName);
                         }
                     }
                     self::reformatGrille($element, $rowIndex, $columnIndex);
@@ -180,6 +165,7 @@ class Game
             }
         }
         self::show();
+        self::playerWon();
         return $this->position_memory_player;
     }
 
