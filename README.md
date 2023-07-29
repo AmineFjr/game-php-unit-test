@@ -1,2 +1,2 @@
 command to use : 
-- phpunit tests/gameTest.php
+- phpunit tests/GameTest.php
