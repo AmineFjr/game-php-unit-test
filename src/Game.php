@@ -17,6 +17,9 @@ class Game
         self::start();
     }
 
+    /**
+     * @return array
+     */
     public function grille(): array
     {
         // Taille de la grille
@@ -47,6 +50,9 @@ class Game
         }
     }
 
+    /**
+     * this function know which player won the game
+    */
     private function playerWon()
     {
         $taille = 10;
@@ -65,6 +71,12 @@ class Game
         }
     }
 
+    /**
+     * this function reformat the grid after each player action
+     * @param string $element
+     * @param int $rowIndex
+     * @param int $columnIndex
+     */
     private function reformatGrille(string $element, int $rowIndex, int $columnIndex)
     {
         if (!$this->moved) {
@@ -84,6 +96,9 @@ class Game
         }
     }
 
+    /**
+     * this function track error
+     */
     private function trackError()
     {
         if ($this->playerName !== "P1" && $this->playerName !== "P2") {
@@ -99,14 +114,16 @@ class Game
         }
     }
 
+    /**
+     * this function search the number of cases between players
+     * @param int $rowIndex
+     * @param int $columnIndex
+     * @param string $playerName
+     * @return int
+     */
     public function nbCasesBetweenPlayers(int $rowIndex, int $columnIndex, string $playerName)
     {
-        if ($playerName === "P1") {
-            $playerToSearch = "P2";
-        } else {
-            $playerToSearch = "P1";
-        }
-
+        ($playerName === "P1") ? $playerToSearch = "P2" : $playerToSearch = "P1";
         //serch on column
         for ($i = 1; $i <= 10; $i++) {
             if ($this->position_memory_player[$rowIndex][$i] == $playerToSearch) {
@@ -123,6 +140,13 @@ class Game
         return $this->distanceBetweenPlayers;
     }
 
+    /**
+     * this function move the player
+     * @param string $player
+     * @param string $orientation
+     * @param int $nbOfSteps
+     * @return array|string
+     */
     public function deplacement(string $player, string $orientation, int $nbOfSteps = 0): array | string
     {
         $this->playerName = $player;
@@ -169,6 +193,9 @@ class Game
         return $this->position_memory_player;
     }
 
+    /**
+     * this function show the grid on the terminal
+     */
     private function show()
     {
         sleep(1);
