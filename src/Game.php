@@ -52,7 +52,7 @@ class Game
 
     /**
      * this function know which player won the game
-    */
+     */
     private function playerWon()
     {
         $taille = 10;

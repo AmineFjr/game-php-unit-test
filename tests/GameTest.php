@@ -1,15 +1,15 @@
 <?php
 require "./src/Game.php";
-define ('PHPUnit_RUNNER_IN_PHAR', 1);
+define('PHPUnit_RUNNER_IN_PHAR', 1);
 
 use PHPUnit\Framework\TestCase;
 
 class GameTest extends TestCase
 {
-
     /**
-    * test that grid is 10 by 10
-    */
+     * test that grid is 10 by 10 
+     * @author Amine
+     */
     public function test_that_grid_is_10_by_10()
     {
         $game = new Game();
@@ -17,9 +17,8 @@ class GameTest extends TestCase
     }
 
     /**
-    * test that player play one by one 
-    *
-    */
+     * test that player play one by one 
+     */
     public function test_that_gamers_play_one_by_one()
     {
         $game = new Game();
@@ -32,9 +31,9 @@ class GameTest extends TestCase
     }
 
     /**
-    * test that player can move 
-    */
-    public function test_that_gamer_can_do_action() 
+     * test that player can move 
+     */
+    public function test_that_gamer_can_do_action()
     {
         $game = new Game();
         $game->deplacement("P1", "AVANCER", 2);
@@ -42,22 +41,23 @@ class GameTest extends TestCase
     }
 
     /**
-    * test gamer will not move if he is not on the grid
-    */
-    public function test_that_gamer_can_not_go_outside_grid() 
+     * test gamer will not move if he is not on the grid
+     */
+    public function test_that_gamer_can_not_go_outside_grid()
     {
         $game = new Game();
         $game->deplacement("P1", "GAUCHE", 2);
         //if false then it means that the player 
         //will not move because his action will be outside the grid
-        $movedOutsideGrid = $game->moved; 
+        $movedOutsideGrid = $game->moved;
         $this->assertFalse($movedOutsideGrid);
     }
-    
+
     /**
-    * test to see if an adverse player is on the vision row or column
-    */
-    public function test_search_if_player_exist_on_column_or_row() {
+     * test to see if an opponent player is on the vision row or column
+     */
+    public function test_search_if_player_exist_on_column_or_row()
+    {
         $game = new Game();
         $game->deplacement("P1", "AVANCER", 2);
         $game->deplacement("P2", "AVANCER", 1);
@@ -66,15 +66,14 @@ class GameTest extends TestCase
     }
 
     /**
-    * test to see which player won the game
-    */
-    public function test_player_won_the_game() {
+     * test to see which player won the game
+     */
+    public function test_player_won_the_game()
+    {
         $game = new Game();
         $game->deplacement("P1", "AVANCER", 2);
         $game->deplacement("P2", "AVANCER", 2);
 
         $this->assertEquals("P2 won the game", $game->playerWon);
-
     }
-
 }
