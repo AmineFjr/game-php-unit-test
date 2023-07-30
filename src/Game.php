@@ -1,6 +1,10 @@
 <?php
 require 'Player.php';
 require 'Orientation.php';
+
+/**
+ * @author Amine Fajry <fajry39@gmail.com>
+ */
 class Game
 {
     public array $position_memory_player;

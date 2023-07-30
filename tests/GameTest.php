@@ -4,11 +4,13 @@ define('PHPUnit_RUNNER_IN_PHAR', 1);
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @author Amine Fajry <fajry39@gmail.com>
+ */
 class GameTest extends TestCase
 {
     /**
      * test that grid is 10 by 10 
-     * @author Amine
      */
     public function test_that_grid_is_10_by_10()
     {
