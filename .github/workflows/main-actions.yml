@@ -28,7 +28,7 @@ jobs:
         run: chmod +x phpunit-9.phar
 
       - name: Run tests
-        run: ./phpunit-9.phar tests/GameTest.php
+        run: ./phpunit-9.phar --bootstrap phpunit-bootstrap.php tests/GameTest.php
       -   name: PHPStan Complete level 6
           uses: php-actions/phpstan@v3
           with:
