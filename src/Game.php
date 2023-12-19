@@ -7,7 +7,6 @@ require 'Orientation.php';
  */
 class Game
 {
-    public array $position_memory_player;
     private string $orientation;
     private int $nbOfStep;
     private string $playerName;
@@ -38,7 +37,7 @@ class Game
         return $tableau;
     }
 
-    public function start()
+    public function start(): void
     {
         $tableau = self::grille();
         $taille = 10;
@@ -57,7 +56,7 @@ class Game
     /**
      * this function know which player won the game
      */
-    private function playerWon()
+    private function playerWon(): void
     {
         $taille = 10;
         $playerExisted = [];
@@ -81,7 +80,7 @@ class Game
      * @param int $rowIndex
      * @param int $columnIndex
      */
-    private function reformatGrille(string $element, int $rowIndex, int $columnIndex)
+    private function reformatGrille(string $element, int $rowIndex, int $columnIndex): void
     {
         if (!$this->moved) {
             $this->position_memory_player[$rowIndex][$columnIndex] = $element;
@@ -103,7 +102,7 @@ class Game
     /**
      * this function track error
      */
-    private function trackError()
+    private function trackError(): void
     {
         if ($this->playerName !== "P1" && $this->playerName !== "P2") {
             exit('Player name must be P1 or P2');
@@ -125,17 +124,17 @@ class Game
      * @param string $playerName
      * @return int
      */
-    public function nbCasesBetweenPlayers(int $rowIndex, int $columnIndex, string $playerName)
+    public function nbCasesBetweenPlayers(int $rowIndex, int $columnIndex, string $playerName): int
     {
         ($playerName === "P1") ? $playerToSearch = "P2" : $playerToSearch = "P1";
-        //serch on column
+        //search on column
         for ($i = 1; $i <= 10; $i++) {
             if ($this->position_memory_player[$rowIndex][$i] == $playerToSearch) {
                 $this->distanceBetweenPlayers = $i - $rowIndex;
             }
         }
 
-        //serch on row
+        //search on row
         for ($i = 1; $i <= 10; $i++) {
             if ($this->position_memory_player[$i][$columnIndex] == $playerToSearch) {
                 $this->distanceBetweenPlayers = $i - $columnIndex;
@@ -161,7 +160,7 @@ class Game
 
         self::trackError();
 
-        if ($nbOfSteps != 0) {
+        if ($nbOfSteps !== 0) {
             foreach ($this->position_memory_player as $rowIndex => $row) {
                 foreach ($row as $columnIndex => $element) {
                     if ($element == str_contains($element, $this->playerName) && strtoupper($orientation) == Orientation::AVANCER->get()) {
@@ -200,7 +199,7 @@ class Game
     /**
      * this function show the grid on the terminal
      */
-    private function show()
+    private function show(): void
     {
         sleep(1);
         echo '-------------------------------------' . "\n";
