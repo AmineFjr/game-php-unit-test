@@ -20,15 +20,15 @@ jobs:
         with:
           php-version: '8.1'
           tools: phpunit
+
+      - name: Download PHPUnit PHAR
+        run: wget https://phar.phpunit.de/phpunit-9.phar
+
+      - name: Make PHPUnit PHAR executable
+        run: chmod +x phpunit-9.phar
+
       - name: Run tests
-        run: phpunit tests/GameTest.php
-      -   name: PHPUnit tests
-          uses: php-actions/phpunit@v3
-          with:
-            version: '9.6.1'
-            php_version: '8.1'
-            memory_limit: "1024M"
-            configuration: phpunit.xml.dist
+        run: ./phpunit-9.phar tests/GameTest.php
       -   name: PHPStan Complete level 6
           uses: php-actions/phpstan@v3
           with:
